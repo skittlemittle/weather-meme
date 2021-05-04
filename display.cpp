@@ -32,7 +32,7 @@ void Display::drawNumber(uint8_t number)
     x = i % fw;
     if (x == 0) y++;
     y %= fh;
-    leds[XYsafe((matrix_side - 1) - (x + 4), y + 1)] = d[i] == true ? CRGB::White : CRGB::Black;
+    if (d[i]) leds[XYsafe((matrix_side - 1) - (x + 4), y + 1)] = CRGB::White;
   }
   x = 0;
   y = -1;
@@ -41,15 +41,24 @@ void Display::drawNumber(uint8_t number)
     x = i % fw;
     if (x == 0) y++;
     y %= fh;
-    leds[XYsafe((matrix_side - 1) - x, y + 1)] = d[i] == true ? CRGB::White : CRGB::Black;
+    if (d[i]) leds[XYsafe((matrix_side - 1) - x, y + 1)] = CRGB::White;
   }
   FastLED.show();
 }
 
 /** copies over the first size pixels from image to the leds array */
-void Display::drawImage(const CRGB* image, int size)
+void Display::drawImage(const unsigned long* image, int size)
 {
-  memcpy(leds, image, size);
+  for (size_t i = 0; i < size; i++)
+    leds[i] = image[i];
+  FastLED.show();
+}
+
+/** turns all the leds off */
+void Display::clear()
+{
+  for (size_t i = 0; i < NUM_LEDS; i++)
+    leds[i] = CRGB::Black;
   FastLED.show();
 }
 

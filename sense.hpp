@@ -28,7 +28,7 @@ class Sense {
       return r;
     }
 
-    /** call this cunt before you read the dht innit */
+    /** call this before you read the dht innit */
     static void start()
     {
       dht.begin();

@@ -6,7 +6,7 @@
 const int matrix_side = 8;
 const int NUM_LEDS = matrix_side * matrix_side;
 static CRGB leds_safe[NUM_LEDS + 1];
-static CRGB *const leds(leds_safe + 1);
+static CRGB* const leds(leds_safe + 1);
 
 class Display {
   public:
@@ -19,6 +19,8 @@ class Display {
 
   public:
     void drawNumber(uint8_t number);
-    void drawImage(const CRGB* image, int size);
+    void drawImage(const unsigned long* image, int size);
     void drawAnimation();
+    void clear();
 };
+

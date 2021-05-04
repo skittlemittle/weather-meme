@@ -3,15 +3,35 @@
  */
 #pragma once
 
-// just change the pointer and read
-unsigned long rain1[] = {};
-unsigned long rain2[] = {};
+#include <FastLED.h>
 
-unsigned long hot1[] = {};
-unsigned long hot2[] = {};
+//// images ////
+static unsigned long hot1[] = {
+  0x000, 0x000, 0x000, 0x000, 0x000, 0x000, 0x000, 0x000,
+  0x000, 0x000, 0xf4fe00, 0xf4f00, 0xf4fe00, 0xf4fe00, 0x000, 0x000,
+  0x000, 0xf4fe00, 0xf4fe00, 0xe1cc00, 0xe1cc00, 0xf4fe00, 0xf4fe00, 0x000,
+  0x000, 0xf4fe00, 0xe1cc00, 0xe1cc00, 0xe1cc00, 0xe1cc00, 0xf4fe00, 0x000,
+  0x000, 0xf4fe00, 0xe1cc00, 0xe1cc00, 0xe1cc00, 0xe1cc00, 0xf4fe00, 0x000,
+  0x000, 0xf4fe00, 0xf4fe00, 0xe1cc00, 0xe1cc00, 0xf4fe00, 0xf4fe00, 0x000,
+  0x000, 0x000, 0xf4fe00, 0xf4f00, 0xf4fe00, 0xf4fe00, 0x000, 0x000,
+  0x000, 0x000, 0x000, 0x000, 0x000, 0x000, 0x000, 0x000,
+};
+static unsigned long hot2[] = {
+  0x000, 0x000, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0x000, 0x000,
+  0x000, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0x000,
+  0xf4fe00, 0xf4fe00, 0xf4fe00, 0xe1cc00, 0xe1cc00, 0xf4fe00, 0xf4fe00, 0xf4fe00,
+  0xf4fe00, 0xf4fe00, 0xe1cc00, 0xe1cc00, 0xe1cc00, 0xe1cc00, 0xf4fe00, 0xf4fe00,
+  0xf4fe00, 0xf4fe00, 0xe1cc00, 0xe1cc00, 0xe1cc00, 0xe1cc00, 0xf4fe00, 0xf4fe00,
+  0xf4fe00, 0xf4fe00, 0xf4fe00, 0xe1cc00, 0xe1cc00, 0xf4fe00, 0xf4fe00, 0xf4fe00,
+  0x000, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0x000,
+  0x000, 0x000, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0xf4fe00, 0x000, 0x000,
+};
 
-/** digits 0 to 9 in 3x7*/
-bool n0[] = {
+//// animations ////
+static const unsigned long (*hot[]) = {hot1, hot2};
+
+//// digits 0 to 9 in 3x7 ////
+static bool n0[] = {
   true, true, true,
   true, false, true,
   true, false, true,
@@ -20,7 +40,7 @@ bool n0[] = {
   true, false, true,
   true, true, true
 };
-bool n1[] = {
+static bool n1[] = {
   false, true, false,
   true, true, false,
   false, true, false,
@@ -29,7 +49,7 @@ bool n1[] = {
   false, true, false,
   true, true, true
 };
-bool n2[] = {
+static bool n2[] = {
   true, true, true,
   false, false, true,
   false, false, true,
@@ -38,7 +58,7 @@ bool n2[] = {
   true, false, false,
   true, true, true
 };
-bool n3[] = {
+static bool n3[] = {
   true, true, true,
   false, false, true,
   false, false, true,
@@ -47,7 +67,7 @@ bool n3[] = {
   false, false, true,
   true, true, true
 };
-bool n4[] = {
+static bool n4[] = {
   true, false, true,
   true, false, true,
   true, false, true,
@@ -56,7 +76,7 @@ bool n4[] = {
   false, false, true,
   false, false, true
 };
-bool n5[] = {
+static bool n5[] = {
   true, true, true,
   true, false, false,
   true, false, false,
@@ -65,7 +85,7 @@ bool n5[] = {
   false, false, true,
   true, true, true
 };
-bool n6[] = {
+static bool n6[] = {
   true, true, true,
   true, false, false,
   true, false, false,
@@ -74,7 +94,7 @@ bool n6[] = {
   true, false, true,
   true, true, true
 };
-bool n7[] = {
+static bool n7[] = {
   true, true, true,
   false, false, true,
   false, false, true,
@@ -83,7 +103,7 @@ bool n7[] = {
   false, true, false,
   false, true, false
 };
-bool n8[] = {
+static bool n8[] = {
   true, true, true,
   true, false, true,
   true, false, true,
@@ -92,7 +112,7 @@ bool n8[] = {
   true, false, true,
   true, true, true
 };
-bool n9[] = {
+static bool n9[] = {
   true, true, true,
   true, false, true,
   true, false, true,
@@ -103,6 +123,9 @@ bool n9[] = {
 };
 
 /** 3x7 number font */
-const bool (*digits[]) = {n0, n1, n2, n3, n4, n5, n6, n7, n8, n9};
-/** colors for how much the weather sucked */
-// use an hsv gradient and just use indexes in there
+static const bool (*digits[]) = {n0, n1, n2, n3, n4, n5, n6, n7, n8, n9};
+
+static CHSV red(0, 255, 255);
+static CHSV green(100, 255, 255);
+/** colors for how much the weather sucked, 0: bad, 9: good */
+static const CRGB weather_scale[10];
