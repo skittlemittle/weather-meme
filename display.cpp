@@ -1,3 +1,8 @@
+/*
+ * some graffix methods for an led panel
+ * skittlemittle 2021, MIT license
+ */
+
 #include <FastLED.h>
 #include "display.hpp"
 #include "images.hpp"
@@ -5,7 +10,7 @@
 // retardation
 #define COLOR_ORDER GRB
 #define CHIP WS2811
-#define BRIGHTNESS 32
+#define BRIGHTNESS 16
 #define LED_PIN 4
 
 Display::Display()
@@ -46,11 +51,28 @@ void Display::drawNumber(uint8_t number)
   FastLED.show();
 }
 
-/** copies over the first size pixels from image to the leds array */
-void Display::drawImage(const unsigned long* image, int size)
+/**
+ * copies over the first size pixels from image to the leds array
+ * if layer is true black pixels are treated as transparent
+ */
+void Display::drawImage(const unsigned long* image, int size, bool layer = false)
 {
-  for (size_t i = 0; i < size; i++)
-    leds[i] = image[i];
+  for (size_t i = 0; i < size; i++) {
+    if (layer && image[i] != 0x000000) leds[i] = image[i];
+    else leds[i] = image[i];
+  }
+}
+
+/**
+ * fills the matrix with 2x2 colored squares, each square is colored
+ * to represent how objectively (totally not biased to rain) bad / good the 
+ * weather that day was.
+ */
+void Display::drawHistory(uint8_t days)
+{
+  // show todays color then history?
+  clear();
+  fill_gradient(leds, days, CHSV(200, 255, 255), CHSV(45, 255, 255));
   FastLED.show();
 }
 
@@ -61,6 +83,25 @@ void Display::clear()
     leds[i] = CRGB::Black;
   FastLED.show();
 }
+
+// === Animations ===
+void Display::hot()
+{
+  drawImage(sun1, 64);
+  FastLED.delay(550);
+  drawImage(sun2, 64);
+  FastLED.delay(350);
+}
+
+void Display::rain()
+{
+  // random pixel at top, scroll down y, draw blue
+  // static array to track which columns we raining on?
+  // that way wee have one static 8 element array
+  // fadeToBlackBy(leds, NUM_LEDS, 20);
+}
+
+// === le garbag ===
 
 uint16_t Display::XY(uint8_t x, uint8_t y)
 {

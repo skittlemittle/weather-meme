@@ -1,4 +1,7 @@
-// does all the measurements innit
+/*
+ * does all the weather measurements innit
+ * skittlemittle 2021, MIT license
+ */
 #pragma once
 #include "DHT.h"
 

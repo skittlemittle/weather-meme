@@ -19,8 +19,11 @@ class Display {
 
   public:
     void drawNumber(uint8_t number);
-    void drawImage(const unsigned long* image, int size);
-    void drawAnimation();
+    void drawImage(const unsigned long* image, int size, bool layer = false);
+    void drawHistory(uint8_t days);
     void clear();
+    // weather animations
+    void rain();
+    void hot();
 };
 
