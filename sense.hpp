@@ -41,3 +41,4 @@ class Sense {
 const int Sense::dht_pin = 6;
 const int Sense::rain_pin = 7;
 DHT Sense::dht(Sense::dht_pin, DHT11);
+

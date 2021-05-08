@@ -24,7 +24,7 @@ Display::Display()
   draws a 2 digit number to an 8x8 matrix in a 3x7 pixel font
   padded one pixel on the top
 */
-void Display::drawNumber(uint8_t number)
+void Display::drawNumber(uint8_t number, CRGB color)
 {
   // dont look too long
   int fw = 3, fh = 7;
@@ -37,7 +37,7 @@ void Display::drawNumber(uint8_t number)
     x = i % fw;
     if (x == 0) y++;
     y %= fh;
-    if (d[i]) leds[XYsafe((matrix_side - 1) - (x + 4), y + 1)] = CRGB::White;
+    if (d[i]) leds[XYsafe((matrix_side - 1) - (x + 4), y + 1)] = color;
   }
   x = 0;
   y = -1;
@@ -46,7 +46,7 @@ void Display::drawNumber(uint8_t number)
     x = i % fw;
     if (x == 0) y++;
     y %= fh;
-    if (d[i]) leds[XYsafe((matrix_side - 1) - x, y + 1)] = CRGB::White;
+    if (d[i]) leds[XYsafe((matrix_side - 1) - x, y + 1)] = color;
   }
   FastLED.show();
 }
@@ -55,7 +55,7 @@ void Display::drawNumber(uint8_t number)
  * copies over the first size pixels from image to the leds array
  * if layer is true black pixels are treated as transparent
  */
-void Display::drawImage(const unsigned long* image, int size, bool layer = false)
+void Display::drawImage(const unsigned long* image, uint8_t size, bool layer = false)
 {
   for (size_t i = 0; i < size; i++) {
     if (layer && image[i] != 0x000000) leds[i] = image[i];
@@ -70,7 +70,6 @@ void Display::drawImage(const unsigned long* image, int size, bool layer = false
  */
 void Display::drawHistory(uint8_t days)
 {
-  // show todays color then history?
   clear();
   fill_gradient(leds, days, CHSV(200, 255, 255), CHSV(45, 255, 255));
   FastLED.show();
@@ -84,21 +83,13 @@ void Display::clear()
   FastLED.show();
 }
 
-// === Animations ===
-void Display::hot()
+/** animates a sequence of images */
+void Display::animate(const unsigned long** anim, uint8_t num_frames)
 {
-  drawImage(sun1, 64);
+  static uint8_t frame = 0;
+  drawImage(anim[frame], NUM_LEDS);
+  frame = (frame + 1) % num_frames;
   FastLED.delay(550);
-  drawImage(sun2, 64);
-  FastLED.delay(350);
-}
-
-void Display::rain()
-{
-  // random pixel at top, scroll down y, draw blue
-  // static array to track which columns we raining on?
-  // that way wee have one static 8 element array
-  // fadeToBlackBy(leds, NUM_LEDS, 20);
 }
 
 // === le garbag ===

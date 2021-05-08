@@ -18,12 +18,10 @@ class Display {
     uint16_t XYsafe(uint8_t x, uint8_t y);
 
   public:
-    void drawNumber(uint8_t number);
-    void drawImage(const unsigned long* image, int size, bool layer = false);
+    void drawNumber(uint8_t number, CRGB color);
+    void drawImage(const unsigned long* image, uint8_t size, bool layer = false);
     void drawHistory(uint8_t days);
     void clear();
-    // weather animations
-    void rain();
-    void hot();
+    void animate(const unsigned long** anim, uint8_t num_frames);
 };
 
