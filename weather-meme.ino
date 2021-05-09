@@ -15,6 +15,7 @@
 // globs
 Display display;
 WState weather;
+DayQuality quality;
 bool user_present = false;
 
 void setup()
@@ -24,7 +25,6 @@ void setup()
   Sense::start();
   attachInterrupt(digitalPinToInterrupt(PIR), onMovement, RISING);
   Serial.begin(9600);
-  display.drawHistory(16);
 }
 
 void showStatus();
@@ -41,22 +41,6 @@ void loop()
       showHistory();
     }
   }
-}
-
-
-/** saves the days color to eeprom*/
-void recordDayColor()
-{
-  int avg_t = 0;
-  int ts = sizeof t_log / sizeof t_log[0];
-  for (size_t i = 0; i < ts; i++)
-    avg_t += t_log[i];
-
-  avg_t /= ts;
-  // clear the previous days logs
-  for (size_t i = 0; i < ts; i++)
-    t_log[i] = 0;
-  rain_duration = 0;
 }
 
 void showHistory()
