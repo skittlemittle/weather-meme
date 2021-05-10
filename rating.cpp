@@ -1,4 +1,5 @@
 #include "rating.hpp"
+#include <EEPROM.h>
 
 /** measurement_ranges = {min_t, max_t, min_h, max_h, min_r, max_r}*/
 DayQuality::DayQuality(uint8_t* measurement_ranges = default_ranges)
@@ -6,6 +7,7 @@ DayQuality::DayQuality(uint8_t* measurement_ranges = default_ranges)
   temp_log = new int[num_samples]{0};
   humidity_log = new int[num_samples]{0};
   rain_duration = 0;
+  EEPROM.get(EEPROM.length() - sizeof address, address);
   min_t = measurement_ranges[0];
   max_t = measurement_ranges[1];
   min_h = measurement_ranges[2];
@@ -17,9 +19,9 @@ DayQuality::DayQuality(uint8_t* measurement_ranges = default_ranges)
 /**
  * rates the day between on a scale of 0 to 9
  * red: how hot, blue: rain duration, green: how humid
- * returns a hue value
+ * returns a hue value [0, 255]
  */
-uint8_t DayQuality::calculateDayColor()
+byte DayQuality::calculateDayColor()
 {
   // function of avg temperature and rain duration
   int8_t avg_temp = 0, avg_humidity = 0;
@@ -52,8 +54,15 @@ void DayQuality::updateRainDuration(uint8_t d)
   if (rain_duration > max_r) rain_duration = max_r;
 }
 
+/** store the days color in eeprom */
 void DayQuality::recordDayColor()
 {
+  EEPROM.update(address, calculateDayColor());
+  address++;
+  // i keep the day pointer at the very end of the eeprom
+  if (address == EEPROM.length() - sizeof address) address = 0;
+  EEPROM.update(EEPROM.length() - sizeof address, address);
+
   // reset for the next day
   for (size_t i = 0; i < num_samples; i++) {
     temp_log[i] = 0;
@@ -62,3 +71,13 @@ void DayQuality::recordDayColor()
   rain_duration = 0;
 }
 
+/** fills r with the hues of the past `days` days */
+uint8_t* DayQuality::getHistory(uint8_t* r, uint8_t days)
+{
+  uint8_t c_add = address;
+  for (size_t i = 0; i < days; i++) {
+    EEPROM.get(c_add++, r[i]);
+    if (c_add == EEPROM.length() - sizeof address) address = 0;
+  }
+  return r;
+}

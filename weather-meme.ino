@@ -25,17 +25,31 @@ void setup()
   Sense::start();
   attachInterrupt(digitalPinToInterrupt(PIR), onMovement, RISING);
   Serial.begin(9600);
+
+  WState tw;
+  tw.temperature = 28;
+  tw.humidity = 50;
+  for (int i = 0; i < 12; i++)
+    quality.logWeather(tw);
+/*
+  quality.updateRainDuration(10);
+  Serial.println(quality.calculateDayColor());
+
+  quality.recordDayColor();
+  uint8_t hist[1];
+  quality.getHistory(hist, 1);
+*/
 }
 
 void showStatus();
-void showHistory();
+void showHistory(uint8_t days = 64);
 void updateReadings();
 
 void loop()
 {
   if (user_present) {
     updateReadings();
-    if (true) {
+    if (false) {
       showStatus();
     } else {
       showHistory();
@@ -43,10 +57,12 @@ void loop()
   }
 }
 
-void showHistory()
+void showHistory(uint8_t days = 64)
 {
-  display.drawHistory(16);
+  uint8_t h[days];
+  display.drawHistory(quality.getHistory(h, days), days);
   delay(10 * 1000);
+  display.clear();
   user_present = false;
 }
 
@@ -60,13 +76,8 @@ void showStatus()
   display.clear();
   display.drawNumber(weather.humidity / 1, CRGB(0, 170, 255));
   delay(text_delay);
-/*
-  // yes animatio
-  for (int i = 0; i < 10; i++) display.animate(sun, 2);
-  FastLED.delay(1000);
   display.clear();
   user_present = false;
-*/
 }
 
 void updateReadings()

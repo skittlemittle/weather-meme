@@ -64,14 +64,15 @@ void Display::drawImage(const unsigned long* image, uint8_t size, bool layer = f
 }
 
 /**
- * fills the matrix with 2x2 colored squares, each square is colored
- * to represent how objectively (totally not biased to rain) bad / good the 
- * weather that day was.
+ * days: hue values for the past `len` days;
  */
-void Display::drawHistory(uint8_t days)
+void Display::drawHistory(uint8_t* days, uint8_t len)
 {
   clear();
-  fill_gradient(leds, days, CHSV(200, 255, 255), CHSV(45, 255, 255));
+  for (size_t i = 0; i < len; i++) {
+    CHSV h(days[i], 255, 255);
+    hsv2rgb_rainbow(h, leds[i]);
+  }
   FastLED.show();
 }
 

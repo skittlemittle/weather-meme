@@ -20,7 +20,7 @@ class Display {
   public:
     void drawNumber(uint8_t number, CRGB color);
     void drawImage(const unsigned long* image, uint8_t size, bool layer = false);
-    void drawHistory(uint8_t days);
+    void drawHistory(uint8_t* days, uint8_t len);
     void clear();
     void animate(const unsigned long** anim, uint8_t num_frames);
 };

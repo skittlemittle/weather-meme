@@ -23,6 +23,7 @@ class DayQuality {
     unsigned int rain_duration; // how long it been raining today, minutes
     int* temp_log = nullptr; // temperature samples
     int* humidity_log = nullptr; // humidity samples
+    uint8_t address; // eeprom address for the current day
     // min and max weather measurements
     int min_t;
     int max_t;
@@ -33,8 +34,8 @@ class DayQuality {
 
   public:
     void recordDayColor();
-    uint8_t calculateDayColor();
+    byte calculateDayColor();
     void logWeather(WState curr_weather);
     void updateRainDuration(uint8_t d);
-    uint8_t* getHistory(uint8_t days = 16);
+    uint8_t* getHistory(uint8_t* r, uint8_t days);
 };
