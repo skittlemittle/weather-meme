@@ -75,9 +75,12 @@ void DayQuality::recordDayColor()
 uint8_t* DayQuality::getHistory(uint8_t* r, uint8_t days)
 {
   uint8_t c_add = address;
+  uint8_t address_address = EEPROM.length() - sizeof address;
+
+  // our day colors are stored as bytes so we can just walk around eeprom in steps of 1
   for (size_t i = 0; i < days; i++) {
-    EEPROM.get(c_add++, r[i]);
-    if (c_add == EEPROM.length() - sizeof address) address = 0;
+    EEPROM.get(c_add--, r[i]);
+    if (c_add == address_address) c_add = address_address - 1;
   }
   return r;
 }

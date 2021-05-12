@@ -28,12 +28,12 @@ void setup()
 
   WState tw;
   tw.temperature = 28;
-  tw.humidity = 50;
+  tw.humidity = 0;
   for (int i = 0; i < 12; i++)
     quality.logWeather(tw);
+
+  quality.updateRainDuration(0);
 /*
-  quality.updateRainDuration(10);
-  Serial.println(quality.calculateDayColor());
 
   quality.recordDayColor();
   uint8_t hist[1];
@@ -49,7 +49,7 @@ void loop()
 {
   if (user_present) {
     updateReadings();
-    if (false) {
+    if (Sense::isUserClose()) {
       showStatus();
     } else {
       showHistory();

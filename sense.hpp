@@ -1,5 +1,5 @@
 /*
- * does all the weather measurements innit
+ * does all the sensing innit
  * skittlemittle 2021, MIT license
  */
 #pragma once
@@ -41,6 +41,7 @@ class Sense {
       return r;
     }
 
+    /** returns true if something is within close cm of the rangefinder */
     static bool isUserClose(uint8_t close = 40)
     {
       // turn it on if it isnt
@@ -62,7 +63,7 @@ class Sense {
       Serial.println("FINISH ME!");
     }
 
-    /** call this before you read the dht innit */
+    /** call this before reading any sensors */
     static void start()
     {
       dht.begin();
