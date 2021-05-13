@@ -27,9 +27,9 @@ class Sense {
       return digitalRead(rain_pin);
     }
 
-    static bool isDay()
+    static bool isDark()
     {
-      return digitalRead(sun_pin);
+      return digitalRead(sun_pin); // its inverted
     }
 
     /** returns temperature and humidity readings */
@@ -58,7 +58,7 @@ class Sense {
     }
 
     /** power down sensors */
-    static sleep()
+    static void sleep()
     {
       Serial.println("FINISH ME!");
     }

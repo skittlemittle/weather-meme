@@ -47,7 +47,7 @@ void DayQuality::logWeather(WState curr_weather)
   if (index >= num_samples) index = num_samples - 1;
 }
 
-/** add d minutes to rain_duration */
+/** add d minutes to rain_duration, unless its been enough rain for the day */
 void DayQuality::updateRainDuration(uint8_t d)
 {
   rain_duration += d;
