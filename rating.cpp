@@ -4,8 +4,12 @@
 /** measurement_ranges = {min_t, max_t, min_h, max_h, min_r, max_r}*/
 DayQuality::DayQuality(uint8_t* measurement_ranges = default_ranges)
 {
-  temp_log = new int[num_samples]{0};
-  humidity_log = new int[num_samples]{0};
+  temp_log = new int[num_samples];
+  humidity_log = new int[num_samples];
+  for (size_t i = 0; i < num_samples; i++) {
+    temp_log[i] = 0;
+    humidity_log[1] = 0;
+  }
   rain_duration = 0;
   EEPROM.get(EEPROM.length() - sizeof address, address);
   min_t = measurement_ranges[0];
@@ -23,15 +27,15 @@ DayQuality::DayQuality(uint8_t* measurement_ranges = default_ranges)
  */
 byte DayQuality::calculateDayColor()
 {
-  // function of avg temperature and rain duration
-  int8_t avg_temp = 0, avg_humidity = 0;
+  int8_t avg_temp = 0, avg_humidity = 0, s = 0;
   for (size_t i = 0; i < num_samples; i++) {
     avg_temp += temp_log[i];
     avg_humidity += humidity_log[i];
+    if (humidity_log[i] != 0) s++;
   }
 
-  avg_temp /= num_samples;
-  avg_humidity /= num_samples;
+  avg_temp /= s;
+  avg_humidity /= s;
   CRGB rgb(map(avg_temp, min_t, max_t, 0, 255), map(rain_duration, min_r, max_r, 0, 255), map(avg_humidity, min_h, max_h, 0, 255));
   CHSV r = rgb2hsv_approximate(rgb);
   return r.hue;

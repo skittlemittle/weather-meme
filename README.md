@@ -1,6 +1,6 @@
 I made this thing to complain about how hot its been lately, summer sucks.
 
-!(diagram1)[]
+![diagram1](https://raw.githubusercontent.com/skittlemittle/weather-meme/main/graffics/diagram1.jpg)
 
 It measures:
 
@@ -17,7 +17,7 @@ sucked ass.
 But what do the colors mea??????n!
 
 the color | what it do be meaning tho
-----------:-----------
+----------|-----------
 red       | more red = more bad
 green     | le humidity
 blue      | how long it was raining today innit

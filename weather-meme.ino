@@ -25,14 +25,6 @@ void setup()
   Sense::start();
   attachInterrupt(digitalPinToInterrupt(PIR), onMovement, RISING);
   Serial.begin(9600);
-
-  WState tw;
-  tw.temperature = 28;
-  tw.humidity = 0;
-  for (int i = 0; i < 12; i++)
-    quality.logWeather(tw);
-
-  quality.updateRainDuration(0);
 }
 
 void showStatus();
@@ -44,7 +36,8 @@ void loop()
   // ===========night detection stuff, dark for 30 min = night===========
   static uint8_t n_check = 0;
   static bool check_dark = true;
-  static unsigned long t1 = 0;
+  // time weather logging and night checking
+  static unsigned long t_night = 0, t_log = 0;
   static bool is_night = false;
   static const int num_light_samples = 5;
   static bool light_samples[num_light_samples];
@@ -75,9 +68,14 @@ void loop()
 
   // check dark every 5 mins
   unsigned long t2 = millis();
-  if (!check_dark && t2 - t1 > 300000) {
+  if (!check_dark && t2 - t_night > 300000) {
     check_dark = true;
-    t1 = t2;
+    t_night = t2;
+  }
+  // log the weather every hour
+  if (t2 - t_log > 3600000) {
+    updateReadings();
+    quality.logWeather(weather);
   }
 
   // ===========ui stuff===========

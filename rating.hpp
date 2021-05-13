@@ -12,6 +12,7 @@ struct WState {
   bool raining;
 };
 
+/** measurement_ranges = {min_t, max_t, min_h, max_h, min_r, max_r}*/
 const uint8_t default_ranges[] = {10, 40, 35, 74, 0, 60};
 
 class DayQuality {
@@ -19,7 +20,7 @@ class DayQuality {
     DayQuality(uint8_t* measurement_ranges = default_ranges);
 
   private:
-    const int num_samples = 12;
+    const int num_samples = 24;
     unsigned int rain_duration; // how long it been raining today, minutes
     int* temp_log = nullptr; // temperature samples
     int* humidity_log = nullptr; // humidity samples
