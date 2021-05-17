@@ -10,7 +10,7 @@
 // retardation
 #define COLOR_ORDER GRB
 #define CHIP WS2811
-#define BRIGHTNESS 16
+#define BRIGHTNESS 10
 #define LED_PIN 4
 
 Display::Display()
@@ -71,11 +71,8 @@ void Display::drawHistory(uint8_t* days, uint8_t len)
   clear();
   for (size_t i = 0; i < len; i++) {
     CHSV h(days[i], 255, 255);
-    Serial.print(days[i]);
-    Serial.print(",");
     hsv2rgb_rainbow(h, leds[i]);
   }
-  Serial.println(".");
   FastLED.show();
 }
 

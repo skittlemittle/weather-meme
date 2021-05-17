@@ -16,15 +16,13 @@
 Display display;
 WState weather;
 DayQuality quality;
-bool user_present = false;
+bool user_present = true;
 
 void setup()
 {
   const int PIR = 3;
-
   Sense::start();
   attachInterrupt(digitalPinToInterrupt(PIR), onMovement, RISING);
-  Serial.begin(9600);
 }
 
 void showStatus();
@@ -42,27 +40,29 @@ void loop()
   static const int num_light_samples = 5;
   static bool light_samples[num_light_samples];
 
-  if (check_dark) {
-    if (Sense::isDark()) {
+  if (check_dark && !is_night) {
+    if (Sense::isDark())
       light_samples[n_check++] = true;
-    }
 
-    // save day color once we know its actually night
     if (n_check >= num_light_samples) {
       int o = 1;
       for (int i = 0; i < num_light_samples; i++) {
         if (light_samples[i]) o--;
         else o++;
       }
+      // save day color once we know its actually night
       if (o < 0) {
-        if (!is_night) {
-          quality.recordDayColor();
-          is_night = true;
-        } else {
-          is_night = false;
-        }
+        quality.recordDayColor();
+        is_night = true;
+        for (int i = 0; i < num_light_samples; i++)
+          light_samples[i] = false;
       }
+      // we finna write over the garbag
+      n_check = 0;
     }
+    check_dark = false;
+  } else if (!Sense::isDark()) {
+    is_night = false;
     check_dark = false;
   }
 
@@ -81,6 +81,7 @@ void loop()
   // ===========ui stuff===========
   if (user_present) {
     updateReadings();
+    delay(500); // give em time to get close
     if (Sense::isUserClose()) {
       showStatus();
     } else {
@@ -121,7 +122,7 @@ void updateReadings()
 
   static unsigned long tr1 = 0;
   if (weather.raining) {
-    if (tr1 = 0) tr1 = millis();
+    if (tr1 == 0) tr1 = millis();
     unsigned long tr2 = millis();
     quality.updateRainDuration((uint8_t)((tr2 - tr1) / 60000));
     tr1 = tr2;

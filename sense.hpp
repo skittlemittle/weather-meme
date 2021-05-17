@@ -42,11 +42,8 @@ class Sense {
     }
 
     /** returns true if something is within close cm of the rangefinder */
-    static bool isUserClose(uint8_t close = 40)
+    static bool isUserClose(uint8_t close = 55)
     {
-      // turn it on if it isnt
-      if (digitalRead(rangefinder_gnd) != LOW) digitalWrite(rangefinder_gnd, LOW);
-
       digitalWrite(trig_pin, LOW);
       delayMicroseconds(2);
       digitalWrite(trig_pin, HIGH);
@@ -55,12 +52,6 @@ class Sense {
 
       // maff maffics microseconds to centimeters
       return (pulseIn(echo_pin, HIGH) / 29 / 2) <= close;
-    }
-
-    /** power down sensors */
-    static void sleep()
-    {
-      Serial.println("FINISH ME!");
     }
 
     /** call this before reading any sensors */
@@ -72,7 +63,7 @@ class Sense {
       pinMode(sun_pin, INPUT);
       pinMode(trig_pin, OUTPUT);
       pinMode(rangefinder_gnd, OUTPUT);
-      digitalWrite(rangefinder_gnd, HIGH);
+      digitalWrite(rangefinder_gnd, LOW);
     }
 };
 
