@@ -87,7 +87,7 @@ void loop()
       showHistory();
 
       bool done = false;
-      uint16_t proximity_time = millis();
+      unsigned long proximity_time = millis();
       while (!done && millis() - proximity_time < 10000) {
         if (Sense::isUserClose()) {
           showStatus();
