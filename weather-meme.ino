@@ -81,12 +81,22 @@ void loop()
   // ===========ui stuff===========
   if (user_present) {
     updateReadings();
-    delay(500); // give em time to get close
     if (Sense::isUserClose()) {
       showStatus();
     } else {
       showHistory();
+
+      bool done = false;
+      uint16_t proximity_time = millis();
+      while (!done && millis() - proximity_time < 10000) {
+        if (Sense::isUserClose()) {
+          showStatus();
+          done = true;
+        }
+      }
+      display.clear();
     }
+    user_present = false;
   }
 }
 
@@ -94,9 +104,6 @@ void showHistory(uint8_t days = 64)
 {
   uint8_t h[days];
   display.drawHistory(quality.getHistory(h, days), days);
-  delay(10 * 1000);
-  display.clear();
-  user_present = false;
 }
 
 void showStatus()
@@ -110,12 +117,11 @@ void showStatus()
   display.drawNumber(weather.humidity / 1, CRGB(0, 170, 255));
   delay(text_delay);
   display.clear();
-  user_present = false;
 }
 
 void updateReadings()
 {
-  TempHumidity th = Sense::readTH();
+  WeatherReadings th = Sense::readTH();
   weather.temperature = th.temperature;
   weather.humidity = th.humidity;
   weather.raining = Sense::isRaining();

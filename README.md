@@ -28,6 +28,8 @@ blue      | how long it was raining today innit (very cool)
 
 remember the old somebody toucha my spaghet meme? that was a good meme.
 
+Change yo weather settings and such in `sense.hpp`
+
 **saving**
 
 Once it has been dark for 30 minutes itll save the color of the day to eeprom.
