@@ -36,7 +36,12 @@ byte DayQuality::calculateDayColor()
 
   avg_temp /= s;
   avg_humidity /= s;
-  CRGB rgb(map(avg_temp, min_t, max_t, 0, 255), map(rain_duration, min_r, max_r, 0, 255), map(avg_humidity, min_h, max_h, 0, 255));
+  CRGB rgb(
+      map(avg_temp, min_t, max_t, 0, 255),
+      map(avg_humidity, min_h, max_h, 0, 150),
+      map(rain_duration, min_r, max_r, 0, 255)
+  );
+  if (rain_duration > 5) rgb.blue += 125; // go cry
   CHSV r = rgb2hsv_approximate(rgb);
   return r.hue;
 }

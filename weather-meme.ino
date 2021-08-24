@@ -32,36 +32,25 @@ void updateReadings();
 void loop()
 {
   // ===========night detection stuff, dark for 30 min = night===========
-  static uint8_t n_check = 0;
   static bool check_dark = true;
   // time weather logging and night checking
   static unsigned long t_night = 0, t_log = 0;
   static bool is_night = false;
-  static const int num_light_samples = 5;
-  static bool light_samples[num_light_samples];
+  static const int dark_threshold = 5;
+  static bool dark_count = 0;
 
   if (check_dark && !is_night) {
     if (Sense::isDark())
-      light_samples[n_check++] = true;
+      dark_count++;
+    else
+      dark_count = 0;
 
-    if (n_check >= num_light_samples) {
-      int o = 1;
-      for (int i = 0; i < num_light_samples; i++) {
-        if (light_samples[i]) o--;
-        else o++;
-      }
-      // save day color once we know its actually night
-      if (o < 0) {
-        quality.recordDayColor();
-        is_night = true;
-        for (int i = 0; i < num_light_samples; i++)
-          light_samples[i] = false;
-      }
-      // we finna write over the garbag
-      n_check = 0;
+    if (dark_count >= dark_threshold) {
+      quality.recordDayColor();
+      is_night = true;
     }
     check_dark = false;
-  } else if (!Sense::isDark()) {
+  } else if (check_dark && !Sense::isDark()) {
     is_night = false;
     check_dark = false;
   }
@@ -81,7 +70,7 @@ void loop()
   // ===========ui stuff===========
   if (user_present) {
     updateReadings();
-    if (Sense::isUserClose()) {
+    if (Sense::isUserClose(30)) {
       showStatus();
     } else {
       showHistory();
